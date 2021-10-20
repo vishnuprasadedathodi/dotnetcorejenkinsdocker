@@ -1,0 +1,84 @@
+pipeline {
+  agent any
+  stages {
+    stage("Prepare") {
+      steps {
+        echo "Notify the build status";
+        
+      }
+    }
+
+    stage('Checkout') {
+      steps {
+        echo "Checking out from Git Repo";
+    
+       git url: 'https://gitlab.training.dagility.com/vishnuprasade/prudentialtask2.git',
+        branch: 'master'
+      }
+    } 
+    
+    stage('Restore packages') {
+      steps {
+        bat "dotnet restore core1.csproj"
+      }
+    }
+
+
+
+    stage('Build') {
+      steps {
+        bat "dotnet build  core1.csproj "
+        
+      }
+    }
+
+    stage('Publish') {
+      steps {
+        bat "dotnet publish core1.csproj"
+      }
+    }
+
+     stage('Package') {
+      steps {
+        echo "Deploying to stage environment for more tests!";
+        bat "del *.zip"
+        
+        bat "tar.exe -a -c -f dotnetcoredeploy.zip bin\\Debug\\netcoreapp3.1\\publish "
+       
+      }
+    }
+
+
+    stage ('Deploy')
+    {
+    steps{
+      bat "cd C:\\Users\\Administrator\\Desktop\\deploy del *.zip"
+      bat "copy dotnetcoredeploy.zip  C:\\Users\\Administrator\\Desktop\\deploy"
+
+       powershell """ Remove-Item -LiteralPath C:\\Users\\Administrator\\Desktop\\deploy\\bin -Force -Recurse  
+                      Expand-Archive  -LiteralPath C:\\Users\\Administrator\\Desktop\\deploy\\dotnetcoredeploy.zip -DestinationPath C:\\Users\\Administrator\\Desktop\\deploy
+   
+                      Import-Module  WebAdministration
+                      
+                      Remove-WebSite -Name dotnetcoredeploy
+                      Remove-WebAppPool -Name dotnetcoredeploy
+
+                      New-WebAppPool -Name dotnetcoredeploy -Force
+
+                      New-Website -Name dotnetcoredeploy -Port 82 -IPAddress * -HostHeader dotnetcoredeploy.com -PhysicalPath C:\\Users\\Administrator\\Desktop\\deploy\\bin\\Debug\\netcoreapp3.1\\publish -ApplicationPool dotnetcoredeploy -Force
+
+                      New-WebBinding -Name dotnetcoredeploy -IPAddress "*" -Port 82 -Protocol http
+                      
+                       """
+
+      }
+
+    }
+   
+  
+
+    
+
+    
+  }
+}
