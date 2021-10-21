@@ -52,7 +52,7 @@ pipeline {
     stage ('Deploy')
     {
     steps{
-      bat "cd C:\\Users\\Administrator\\Desktop\\deploy del *.zip"
+      bat "C: cd C:\\Users\\Administrator\\Desktop\\deploy del *.zip"
       bat "copy dotnetcoredeploy.zip  C:\\Users\\Administrator\\Desktop\\deploy"
 
        powershell """ Remove-Item -LiteralPath C:\\Users\\Administrator\\Desktop\\deploy\\bin -Force -Recurse  
