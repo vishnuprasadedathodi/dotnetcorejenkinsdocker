@@ -1,5 +1,9 @@
 pipeline {
   agent any
+  
+  environment {
+  EMAIL_TO= 'vishnuprasadedathodi@gmail.com'
+  }
   stages {
     stage("Prepare") {
       steps {
@@ -12,7 +16,7 @@ pipeline {
       steps {
         echo "Checking out from Git Repo";
     
-       git url: 'https://github.com/vishnuprasadedathodi/dotnetcorejenkinsdocker.git',
+       git url: 'https://gitlab.training.dagility.com/vishnuprasade/prudentialtask2.git',
         branch: 'master'
       }
     } 
@@ -39,10 +43,6 @@ pipeline {
     }
 
      stage('Package') {
-      when {
-                branch 'master'
-                
-            }
       steps {
         echo "Deploying to stage environment for more tests!";
         bat "del *.zip"
@@ -55,10 +55,6 @@ pipeline {
 
     stage ('Deploy')
     {
-       when {
-                branch 'master'
-                
-            }
     steps{
       bat "C: cd C:\\Users\\Administrator\\Desktop\\deploy del *.zip"
       bat "copy dotnetcoredeploy.zip  C:\\Users\\Administrator\\Desktop\\deploy"
@@ -83,10 +79,23 @@ pipeline {
 
     }
    
-  
-
-    
-
-    
+ 
   }
+  
+  post {
+      success {
+          emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                  to: "${EMAIL_TO}", 
+                  subject: 'Build succeded in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+      }
+      failure {
+          emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                  to: "${EMAIL_TO}", 
+                  subject: 'Build failed in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+      }
+     
+  }
+  
+  
+  
 }
