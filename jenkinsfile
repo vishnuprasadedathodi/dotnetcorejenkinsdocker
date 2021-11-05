@@ -12,7 +12,7 @@ pipeline {
       steps {
         echo "Checking out from Git Repo";
     
-       git url: 'https://gitlab.training.dagility.com/vishnuprasade/prudentialtask2.git',
+       git url: 'https://github.com/vishnuprasadedathodi/dotnetcorejenkinsdocker.git',
         branch: 'master'
       }
     } 
