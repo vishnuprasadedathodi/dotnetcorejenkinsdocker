@@ -39,6 +39,10 @@ pipeline {
     }
 
      stage('Package') {
+      when {
+                branch 'master'
+                
+            }
       steps {
         echo "Deploying to stage environment for more tests!";
         bat "del *.zip"
@@ -53,7 +57,7 @@ pipeline {
     {
        when {
                 branch 'master'
-                branch 'feature'
+                
             }
     steps{
       bat "C: cd C:\\Users\\Administrator\\Desktop\\deploy del *.zip"
