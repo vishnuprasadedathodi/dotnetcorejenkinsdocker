@@ -53,6 +53,7 @@ pipeline {
     {
        when {
                 branch 'master'
+                branch 'feature'
             }
     steps{
       bat "C: cd C:\\Users\\Administrator\\Desktop\\deploy del *.zip"
