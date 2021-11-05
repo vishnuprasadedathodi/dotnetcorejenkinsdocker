@@ -51,6 +51,9 @@ pipeline {
 
     stage ('Deploy')
     {
+       when {
+                branch 'master'
+            }
     steps{
       bat "C: cd C:\\Users\\Administrator\\Desktop\\deploy del *.zip"
       bat "copy dotnetcoredeploy.zip  C:\\Users\\Administrator\\Desktop\\deploy"
